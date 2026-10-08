@@ -1,0 +1,6 @@
+{
+  "name": "Move More - Gamifikasi Kesehatan Remaja",
+  "description": "Aplikasi gamifikasi pencegahan diabetes pada remaja sekolah dengan tracking langkah kaki, maskot virtual pet tosca ceria, kuis edukasi nutrisi, dan voucher makan siang sehat kantin.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

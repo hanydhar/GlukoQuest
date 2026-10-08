@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@keyframes mascotFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes mascotIdleBounce {
+  0%, 100% {
+    transform: translateY(0px) scale(1, 1);
+  }
+  50% {
+    transform: translateY(-7px) scale(0.98, 1.02);
+  }
+}
+
+@keyframes shadowPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.25;
+  }
+  50% {
+    transform: scale(0.88);
+    opacity: 0.12;
+  }
+}
+
+@keyframes armWave {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(14deg);
+  }
+}
+
+.animate-mascot-float {
+  animation: mascotFloat 3s ease-in-out infinite;
+}
+
+.animate-mascot-bounce {
+  animation: mascotIdleBounce 2.4s ease-in-out infinite;
+}
+
+.animate-shadow-pulse {
+  transform-origin: center;
+  animation: shadowPulse 3s ease-in-out infinite;
+}
+
+.animate-arm-wave {
+  transform-origin: 76px 112px;
+  animation: armWave 2s ease-in-out infinite;
+}

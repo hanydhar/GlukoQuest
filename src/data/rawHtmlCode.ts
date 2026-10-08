@@ -1,0 +1,472 @@
+export const RAW_STANDALONE_HTML = `<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlukoQuest - Gamifikasi Kesehatan Remaja</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome 6 via CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brandGreen: '#2ECC71',
+            brandEmerald: '#27AE60',
+            brandTosca: '#1ABC9C',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @keyframes mascotFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes mascotBounce {
+      0%, 100% { transform: translateY(0px) scale(1, 1); }
+      50% { transform: translateY(-7px) scale(0.98, 1.02); }
+    }
+    @keyframes shadowPulse {
+      0%, 100% { transform: scale(1); opacity: 0.25; }
+      50% { transform: scale(0.88); opacity: 0.12; }
+    }
+    @keyframes waveArm {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(14deg); }
+    }
+    .animate-mascot-float {
+      animation: mascotFloat 3s ease-in-out infinite;
+    }
+    .animate-mascot-bounce {
+      animation: mascotBounce 2.2s ease-in-out infinite;
+    }
+    .animate-shadow-pulse {
+      transform-origin: center;
+      animation: shadowPulse 3s ease-in-out infinite;
+    }
+    .animate-wave-hand {
+      transform-origin: 78px 110px;
+      animation: waveArm 2.2s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-[#ECEFF3] font-sans text-slate-800 antialiased min-h-screen flex items-center justify-center p-0 sm:py-5">
+
+  <!-- Mobile Container Wrapper (Mobile First / max-w-md) -->
+  <div class="w-full max-w-md bg-[#F9F9F9] min-h-screen sm:min-h-[812px] sm:max-h-[860px] sm:rounded-[36px] shadow-xl relative flex flex-col justify-between overflow-hidden border border-slate-200">
+
+    <!-- Konten Utama Halaman -->
+    <main class="flex-1 px-4 pt-3.5 pb-20 flex flex-col justify-between space-y-3 overflow-y-auto">
+
+      <!-- ================= 1. HEADER (ATAS) ================= -->
+      <header class="flex items-center justify-between">
+        <!-- Kiri: Foto Profil (berbentuk lingkaran kecil) dengan teks "Budi - SMPN 1" -->
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-full bg-emerald-500 p-0.5 shadow-xs">
+            <div class="w-full h-full rounded-full bg-white flex items-center justify-center text-lg overflow-hidden">
+              👦
+            </div>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-sm font-extrabold text-slate-800 tracking-tight leading-none">Budi</span>
+            <span class="text-[11px] font-semibold text-slate-400 mt-0.5">SMPN 1</span>
+          </div>
+        </div>
+
+        <!-- Kanan: Indikator energi (1.000 langkah = 1 Poin Energi) -->
+        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-800 shadow-xs">
+          <span class="text-yellow-500 text-sm font-black leading-none">⚡</span>
+          <span class="text-xs font-black tracking-tight text-emerald-700 leading-none">3 Poin Energi</span>
+        </div>
+      </header>
+
+      <!-- ================= 2. PEDOMETER SIMPLE (WARNA SERASI GLUKOQUEST) ================= -->
+      <section class="w-full bg-white text-slate-800 rounded-2xl p-4 shadow-xs border border-emerald-200/80">
+        <div class="flex items-center justify-between">
+          <!-- Kiri: Total, Angka Besar, Hari ini -->
+          <div class="flex flex-col">
+            <span class="text-[11px] font-bold text-emerald-700 tracking-wide uppercase leading-none">Total</span>
+            <div class="flex items-baseline gap-1.5 my-1">
+              <span id="step-number" class="text-2xl font-black tracking-tight text-slate-800 leading-none">3.420</span>
+              <span class="text-xs font-bold text-emerald-600">langkah</span>
+            </div>
+            <span class="text-[11px] font-medium text-slate-400 leading-none">Hari ini</span>
+          </div>
+
+          <!-- Kanan: Mini ring progress & Target info -->
+          <div class="flex items-center gap-3">
+            <div class="relative w-9 h-9 flex items-center justify-center flex-shrink-0">
+              <svg class="w-9 h-9 transform -rotate-90" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="14" fill="transparent" stroke="#E2F5EE" stroke-width="3.5" />
+                <circle id="mini-progress-ring" cx="18" cy="18" r="14" fill="transparent" stroke="#1ABC9C" stroke-width="3.5" stroke-dasharray="87.96" stroke-dashoffset="0" stroke-linecap="round" />
+              </svg>
+              <div class="absolute top-0 w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+            </div>
+
+            <div class="flex flex-col text-left">
+              <div class="text-xs text-slate-600 font-medium flex items-center gap-0.5">
+                <span>Target <strong class="font-bold text-slate-800">3.000</strong> langkah</span>
+                <span class="text-emerald-600 text-[10px] ml-0.5">&gt;</span>
+              </div>
+              <span class="text-xs font-medium text-slate-500 mt-0.5">
+                Kemajuan <strong class="font-bold text-emerald-600">114%</strong>
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 3. HERO SECTION (TENGAH - VIRTUAL PET DENGAN FITUR BERI MAKAN) ================= -->
+      <section class="flex flex-col items-center justify-center my-auto py-1 relative">
+        
+        <!-- Bar Atas Virtual Pet: Status (Kiri) | Beri Makan (Tengah) | Dandani (Kanan) -->
+        <div class="w-full grid grid-cols-3 items-center mb-1.5 px-0.5">
+          <!-- Kiri: Status Vitalitas -->
+          <div class="flex justify-start">
+            <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full flex items-center gap-1 shadow-2xs whitespace-nowrap">
+              <i class="fa-solid fa-heart-pulse text-emerald-600 text-[10px]"></i>
+              <span id="vitality-status">Kenyang</span>
+            </span>
+          </div>
+
+          <!-- Tengah: Button Beri Makan (Berada pas di atas tengah virtual pet, tanpa "(1 energi)") -->
+          <div class="flex justify-center">
+            <button
+              type="button"
+              onclick="feedMascot()"
+              class="text-[11px] font-extrabold text-emerald-800 bg-white hover:bg-emerald-50 active:scale-95 border-2 border-emerald-500 px-3 py-1 rounded-xl shadow-xs flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
+              title="Beri makan maskot untuk menjaga vitalitas tetap prima!"
+            >
+              <span class="text-xs">🍎</span>
+              <span>Beri Makan</span>
+            </button>
+          </div>
+
+          <!-- Kanan: Button Dandani & Warna -->
+          <div class="flex justify-end">
+            <button
+              type="button"
+              onclick="document.getElementById('quick-fur-modal').classList.toggle('hidden')"
+              class="text-[11px] font-bold text-slate-700 bg-white hover:bg-slate-50 active:scale-95 border border-slate-200 px-2.5 py-1 rounded-xl shadow-xs flex items-center gap-1 transition-all cursor-pointer whitespace-nowrap"
+              title="Dandani & pilih kostum maskot!"
+            >
+              <span>✨ Dandani</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Area Virtual Pet Monster SVG -->
+        <div class="relative flex items-center justify-center select-none w-full">
+          <svg
+            id="mascot-svg"
+            width="204"
+            height="208"
+            viewBox="0 0 240 244"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="animate-mascot-float"
+          >
+            <defs>
+              <linearGradient id="bodyFurGradient" x1="120" y1="40" x2="120" y2="198" gradientUnits="userSpaceOnUse">
+                <stop id="fur-stop-1" offset="0%" stop-color="#25D3B0" />
+                <stop id="fur-stop-2" offset="55%" stop-color="#1ABC9C" />
+                <stop id="fur-stop-3" offset="100%" stop-color="#149A7D" />
+              </linearGradient>
+
+              <linearGradient id="bellyPatchGrad" x1="120" y1="120" x2="120" y2="185" gradientUnits="userSpaceOnUse">
+                <stop id="belly-stop-1" offset="0%" stop-color="#87EED6" stop-opacity="0.95" />
+                <stop id="belly-stop-2" offset="100%" stop-color="#5CD4BA" stop-opacity="0.85" />
+              </linearGradient>
+
+              <linearGradient id="hornYellowGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#FDE68A" />
+                <stop offset="50%" stop-color="#F59E0B" />
+                <stop offset="100%" stop-color="#D97706" />
+              </linearGradient>
+
+              <linearGradient id="grassMoundGrad" x1="120" y1="190" x2="120" y2="235" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#9BD854" />
+                <stop offset="60%" stop-color="#81C43B" />
+                <stop offset="100%" stop-color="#6AA52B" />
+              </linearGradient>
+
+              <filter id="crispMonsterShadow" x="-10%" y="-10%" width="120%" height="130%" filterUnits="userSpaceOnUse">
+                <feDropShadow dx="0" dy="6" stdDeviation="5" floodColor="#0F241F" floodOpacity="0.14" />
+              </filter>
+            </defs>
+
+            <!-- Pijakan Rumput Hijau & Tanah -->
+            <g id="ground-mound">
+              <ellipse cx="120" cy="223" rx="72" ry="14" fill="#6A492E" />
+              <ellipse cx="120" cy="220" rx="70" ry="12" fill="#7D5837" />
+              <ellipse cx="120" cy="214" rx="68" ry="14" fill="url(#grassMoundGrad)" />
+              <ellipse cx="120" cy="211" rx="64" ry="11" fill="#A4DE5B" />
+              <path d="M72 212 C70 205 73 203 76 208 Z" fill="#7DBE36" />
+              <path d="M86 215 C84 209 88 206 91 211 Z" fill="#8ACF3E" />
+              <path d="M152 214 C155 208 158 209 156 215 Z" fill="#7DBE36" />
+              <path d="M165 212 C167 205 171 206 169 213 Z" fill="#8ACF3E" />
+            </g>
+
+            <!-- Monster Utama -->
+            <g id="monster-character" filter="url(#crispMonsterShadow)">
+              <!-- Kaki -->
+              <ellipse id="monster-foot-l" cx="98" cy="200" rx="14" ry="10" fill="#138D75" />
+              <ellipse id="monster-foot-r" cx="142" cy="200" rx="14" ry="10" fill="#138D75" />
+
+              <!-- Lengan Kiri -->
+              <path
+                d="M168 128 C176 138 180 162 166 172 C161 175 155 168 158 156 C161 144 158 135 156 130 Z"
+                fill="url(#bodyFurGradient)"
+              />
+
+              <!-- Tubuh Chubby -->
+              <path
+                d="M120 48
+                   C80 48 64 85 64 126
+                   C64 165 72 198 120 198
+                   C168 198 176 165 176 126
+                   C176 85 160 48 120 48 Z"
+                fill="url(#bodyFurGradient)"
+              />
+
+              <!-- Jambul Rambut -->
+              <path id="tuft-1" d="M120 48 C118 36 122 34 125 46 Z" fill="#2CE5BF" />
+              <path id="tuft-2" d="M113 50 C110 40 114 38 117 48 Z" fill="#1ABC9C" />
+              <path id="tuft-3" d="M126 50 C128 41 133 42 129 49 Z" fill="#138D75" />
+
+              <!-- Tanduk Kiri Bergaris -->
+              <g transform="rotate(-6 86 64)">
+                <path d="M84 68 C80 50 68 36 62 38 C57 41 62 58 74 74 Z" fill="url(#hornYellowGrad)" stroke="#B45309" stroke-width="1.5" />
+                <path d="M68 50 C71 52 74 56 75 60" stroke="#B45309" stroke-width="2.5" stroke-linecap="round" />
+                <path d="M72 61 C76 63 79 66 80 70" stroke="#B45309" stroke-width="2.5" stroke-linecap="round" />
+              </g>
+
+              <!-- Tanduk Kanan Bergaris -->
+              <g transform="rotate(6 154 64)">
+                <path d="M156 68 C160 50 172 36 178 38 C183 41 178 58 166 74 Z" fill="url(#hornYellowGrad)" stroke="#B45309" stroke-width="1.5" />
+                <path d="M172 50 C169 52 166 56 165 60" stroke="#B45309" stroke-width="2.5" stroke-linecap="round" />
+                <path d="M168 61 C164 63 161 66 160 70" stroke="#B45309" stroke-width="2.5" stroke-linecap="round" />
+              </g>
+
+              <!-- Tangan Melambai -->
+              <g class="animate-wave-hand">
+                <path
+                  d="M74 120
+                     C60 108 45 88 46 76
+                     C47 70 56 70 59 76
+                     C60 72 67 71 69 77
+                     C71 73 78 74 78 81
+                     C82 92 82 108 80 120 Z"
+                  fill="url(#bodyFurGradient)"
+                  stroke="#138D75"
+                  stroke-width="1"
+                />
+              </g>
+
+              <!-- Pola Bulat Perut Tosca Muda -->
+              <path
+                d="M120 126
+                   C100 126 88 140 88 162
+                   C88 180 102 188 120 188
+                   C138 188 152 180 152 162
+                   C152 140 140 126 120 126 Z"
+                fill="url(#bellyPatchGrad)"
+              />
+
+              <!-- Pipi Merona / Blush Pink -->
+              <ellipse cx="88" cy="115" rx="7" ry="4.5" fill="#FF7894" fill-opacity="0.8" />
+              <ellipse cx="152" cy="115" rx="7" ry="4.5" fill="#FF7894" fill-opacity="0.8" />
+
+              <!-- Mata Kartun dengan Binar Berkilau (Sparkle Eyes) -->
+              <ellipse cx="102" cy="98" rx="9.5" ry="11.5" fill="#142823" />
+              <ellipse cx="138" cy="98" rx="9.5" ry="11.5" fill="#142823" />
+              <circle cx="99" cy="94" r="3.6" fill="#FFFFFF" />
+              <circle cx="135" cy="94" r="3.6" fill="#FFFFFF" />
+              <circle cx="105" cy="102" r="1.8" fill="#FFFFFF" />
+              <circle cx="141" cy="102" r="1.8" fill="#FFFFFF" />
+
+              <!-- Mulut Ceria dengan Lidah & Dua Gigi Taring Lucu -->
+              <path d="M106 112 C106 112 110 130 120 130 C130 130 134 112 134 112 Z" fill="#821E36" />
+              <path d="M112 124 C115 120 125 120 128 124 C125 130 115 130 112 124 Z" fill="#FF6B8B" />
+              <polygon points="112,112 115,116 117,112" fill="#FFFFFF" />
+              <polygon points="123,112 125,116 128,112" fill="#FFFFFF" />
+              <path d="M104 112 Q120 115 136 112" stroke="#142823" stroke-width="2.5" stroke-linecap="round" fill="none" />
+            </g>
+
+            <!-- AKSESORIS: Topi SMP (Toggleable) -->
+            <g id="acc-cap" transform="translate(82, 28)" style="display: none;">
+              <path d="M12 28 C12 12 64 12 64 28 Z" fill="#1D4ED8" stroke="#1E40AF" stroke-width="1.5" />
+              <ellipse cx="38" cy="28" rx="26" ry="6" fill="#1E40AF" />
+              <path d="M8 28 C8 24 -12 36 -10 40 C0 42 24 34 32 30 Z" fill="#1E3A8A" />
+              <circle cx="38" cy="14" r="3" fill="#FBBF24" />
+              <text x="38" y="26" text-anchor="middle" fill="#FFFFFF" font-size="8" font-weight="bold">SMP</text>
+            </g>
+
+            <!-- AKSESORIS: Kacamata Bulat (Toggleable) -->
+            <g id="acc-glasses" transform="translate(86, 84)" style="display: none;">
+              <circle cx="16" cy="14" r="13" fill="none" stroke="#1E293B" stroke-width="3" />
+              <circle cx="52" cy="14" r="13" fill="none" stroke="#1E293B" stroke-width="3" />
+              <line x1="29" y1="14" x2="39" y2="14" stroke="#1E293B" stroke-width="3" />
+              <line x1="3" y1="14" x2="-6" y2="10" stroke="#1E293B" stroke-width="2.5" stroke-linecap="round" />
+              <line x1="65" y1="14" x2="74" y2="10" stroke="#1E293B" stroke-width="2.5" stroke-linecap="round" />
+            </g>
+
+            <!-- AKSESORIS: Medali Juara (Toggleable) -->
+            <g id="acc-medal" transform="translate(108, 126)" style="display: none;">
+              <path d="M4 0 L12 18 L6 18 Z" fill="#EF4444" />
+              <path d="M20 0 L12 18 L18 18 Z" fill="#3B82F6" />
+              <circle cx="12" cy="22" r="10" fill="#FBBF24" stroke="#D97706" stroke-width="1.5" />
+              <circle cx="12" cy="22" r="7.5" fill="#F59E0B" />
+              <text x="12" y="26" text-anchor="middle" fill="#FFFFFF" font-size="10" fontWeight="bold">1</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Progress bar memanjang kecil: "Health: 95%" -->
+        <div class="w-full max-w-[210px] flex flex-col items-center mt-1">
+          <div class="w-full flex items-center justify-between text-[11px] font-bold text-slate-600 mb-1">
+            <span>Health: 95%</span>
+            <span class="text-emerald-600 text-[10px]">Vitalitas Prima</span>
+          </div>
+          <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden p-0.5">
+            <div class="h-full bg-brandGreen rounded-full transition-all duration-500" style="width: 95%;"></div>
+          </div>
+        </div>
+
+        <!-- Opsi Bentuk Virtual Pet Lucu -->
+        <div class="w-full mt-2.5 px-1 flex flex-col items-center">
+          <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+            Pilihan Karakter Lucu:
+          </div>
+          <div class="flex items-center justify-center gap-1.5 flex-wrap">
+            <button onclick="setPetForm('classic')" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white shadow-xs cursor-pointer">🦖 Gogi</button>
+            <button onclick="setPetForm('blob')" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 cursor-pointer">🫧 Boba</button>
+            <button onclick="setPetForm('fluffy')" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 cursor-pointer">☁️ Pompom</button>
+            <button onclick="setPetForm('sprout')" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 cursor-pointer">🌱 Tunas</button>
+            <button onclick="setPetForm('mochi')" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 cursor-pointer">🍡 Mochi</button>
+            <button onclick="setPetForm('chibi')" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 cursor-pointer">⭐ Chibi</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ================= 5. BOTTOM NAVIGATION BAR ================= -->
+    <nav class="sticky bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-2 py-2 flex items-center justify-around z-30 shadow-xs">
+      <a href="#beranda" class="flex flex-col items-center justify-center text-emerald-600 transition-colors w-14">
+        <div class="w-7 h-7 rounded-full bg-emerald-50 flex items-center justify-center">
+          <i class="fa-solid fa-house text-sm text-emerald-600"></i>
+        </div>
+        <span class="text-[10px] font-bold mt-0.5 text-emerald-700">Beranda</span>
+      </a>
+
+      <a href="#kuis" class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-600 transition-colors w-14">
+        <div class="w-7 h-7 flex items-center justify-center">
+          <i class="fa-solid fa-trophy text-sm"></i>
+        </div>
+        <span class="text-[10px] font-medium mt-0.5 text-slate-500">Kuis & Rank</span>
+      </a>
+
+      <a href="#feed" class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-600 transition-colors w-14">
+        <div class="w-7 h-7 flex items-center justify-center">
+          <i class="fa-solid fa-bell text-sm"></i>
+        </div>
+        <span class="text-[10px] font-medium mt-0.5 text-slate-500">Feed</span>
+      </a>
+
+      <a href="#voucher" class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-600 transition-colors w-14">
+        <div class="w-7 h-7 flex items-center justify-center">
+          <i class="fa-solid fa-ticket text-sm"></i>
+        </div>
+        <span class="text-[10px] font-medium mt-0.5 text-slate-500">Voucher</span>
+      </a>
+
+      <a href="#profil" class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-600 transition-colors w-14">
+        <div class="w-7 h-7 flex items-center justify-center">
+          <i class="fa-solid fa-user text-sm"></i>
+        </div>
+        <span class="text-[10px] font-medium mt-0.5 text-slate-500">Profil</span>
+      </a>
+    </nav>
+
+  </div>
+
+  <!-- JavaScript Functions untuk Mengubah Warna Bulu & Aksesoris -->
+  <script>
+    const furThemes = {
+      tosca: { s1: '#25D3B0', s2: '#1ABC9C', s3: '#149A7D', b1: '#87EED6', b2: '#5CD4BA', dark: '#138D75', tuft: '#2CE5BF' },
+      sky: { s1: '#38BDF8', s2: '#0284C7', s3: '#0369A1', b1: '#BAE6FD', b2: '#7DD3FC', dark: '#075985', tuft: '#60A5FA' },
+      purple: { s1: '#C084FC', s2: '#9333EA', s3: '#7E22CE', b1: '#E9D5FF', b2: '#D8B4FE', dark: '#6B21A8', tuft: '#D8B4FE' },
+      peach: { s1: '#FB923C', s2: '#EA580C', s3: '#C2410C', b1: '#FED7AA', b2: '#FDBA74', dark: '#9A3412', tuft: '#FDBA74' },
+      pink: { s1: '#F472B6', s2: '#DB2777', s3: '#BE185D', b1: '#FBCFE8', b2: '#F9A8D4', dark: '#9D174D', tuft: '#F472B6' }
+    };
+
+    function changeFurColor(colorKey) {
+      const theme = furThemes[colorKey] || furThemes.tosca;
+      document.getElementById('fur-stop-1').setAttribute('stop-color', theme.s1);
+      document.getElementById('fur-stop-2').setAttribute('stop-color', theme.s2);
+      document.getElementById('fur-stop-3').setAttribute('stop-color', theme.s3);
+      document.getElementById('belly-stop-1').setAttribute('stop-color', theme.b1);
+      document.getElementById('belly-stop-2').setAttribute('stop-color', theme.b2);
+      document.getElementById('monster-foot-l').setAttribute('fill', theme.dark);
+      document.getElementById('monster-foot-r').setAttribute('fill', theme.dark);
+      document.getElementById('tuft-1').setAttribute('fill', theme.tuft);
+      document.getElementById('tuft-2').setAttribute('fill', theme.s2);
+      document.getElementById('tuft-3').setAttribute('fill', theme.s3);
+    }
+
+    function toggleAccessory(accName) {
+      const el = document.getElementById('acc-' + accName);
+      if (el) {
+        el.style.display = (el.style.display === 'none') ? 'block' : 'none';
+      }
+    }
+
+    function setPetForm(formKey) {
+      const names = {
+        classic: 'Gogi Klasik 🦖',
+        blob: 'Boba Jelly 🫧',
+        fluffy: 'Pompom Bulu ☁️',
+        sprout: 'Dino Tunas 🌱',
+        mochi: 'Mochi Manis 🍡',
+        chibi: 'Chibi Star ⭐'
+      };
+      alert('Bentuk karakter diubah ke: ' + (names[formKey] || formKey) + ' ✨');
+    }
+
+    function feedMascot() {
+      alert('🍎 Maskot berhasil diberi makan! Vitalitas terjaga kenyang, bugar & siap mendampingi belajarmu!');
+    }
+
+    let isFloat = true;
+    function toggleAnimType() {
+      const svg = document.getElementById('mascot-svg');
+      const btn = document.getElementById('anim-btn');
+      isFloat = !isFloat;
+      if (isFloat) {
+        svg.className.baseVal = 'animate-mascot-float';
+        btn.innerText = '🎈 Float';
+        btn.className = 'text-[10px] font-bold bg-white border border-slate-200 px-2 py-0.5 rounded-md hover:bg-slate-50 cursor-pointer text-sky-700';
+      } else {
+        svg.className.baseVal = 'animate-mascot-bounce';
+        btn.innerText = '⚡ Bounce';
+        btn.className = 'text-[10px] font-bold bg-white border border-slate-200 px-2 py-0.5 rounded-md hover:bg-slate-50 cursor-pointer text-amber-600';
+      }
+    }
+  </script>
+
+</body>
+</html>`;
