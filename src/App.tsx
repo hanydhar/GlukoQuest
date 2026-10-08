@@ -4,9 +4,8 @@
  */
 
 import React, { useState } from 'react';
-import { MascotSVG, MascotCustomization } from './components/MascotSVG';
+import { MascotSVG } from './components/MascotSVG';
 import { CompactStepCard } from './components/CompactStepCard';
-import { MascotCustomizerModal } from './components/MascotCustomizerModal';
 import { QuizModal } from './components/QuizModal';
 import { LeaderboardTab } from './components/LeaderboardTab';
 import { VoucherTab } from './components/VoucherTab';
@@ -19,7 +18,7 @@ type ActiveTab = 'beranda' | 'kuis' | 'feed' | 'voucher' | 'profil';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('beranda');
-  
+
   // App State - Kurasi Otomatis dari Pelacak Langkah Kaki
   // 1.000 langkah = 1 Poin Energi (Target: 3.000 langkah/hari)
   const [steps, setSteps] = useState(3420);
@@ -38,40 +37,27 @@ export default function App() {
   const [hasFedToday, setHasFedToday] = useState(true);
   const [isEatingAnim, setIsEatingAnim] = useState(false);
 
-  // Status Vitalitas: Default 95% (Prima & Ceria) atau 30% (Lesu & Sedih)
+  // Status Vitalitas: Ceria (95%), Netral (60%), Lesu (15%)
   const [healthPercent, setHealthPercent] = useState<number>(95);
-  const currentMood = healthPercent > 50 ? 'happy' : 'tired';
+
+  const currentMood: 'happy' | 'neutral' | 'tired' =
+    healthPercent > 70 ? 'happy' : healthPercent >= 35 ? 'neutral' : 'tired';
 
   const toggleHealthMode = () => {
-    if (healthPercent > 50) {
-      setHealthPercent(30);
+    if (healthPercent > 70) {
+      setHealthPercent(60);
+      setHasFedToday(true);
+      showToast('Simulasi Energi: Netral (60% - Santai & Stabil) 🌿');
+    } else if (healthPercent >= 35) {
+      setHealthPercent(15);
       setHasFedToday(false);
-      showToast('Simulasi: Health 30% (Virtual Pet Lesu & Sedih) 😔');
+      showToast('Simulasi Energi: Lesu (15% - Butuh Langkah Kaki & Apel) 💧');
     } else {
       setHealthPercent(95);
       setHasFedToday(true);
-      showToast('Simulasi: Health 95% (Virtual Pet Ceria & Bugar) ✨');
+      showToast('Simulasi Energi: Ceria (95% - Vitalitas Bugar & Melambai) ✨');
     }
   };
-
-  // Mascot Customization (Default tosca murni tanpa aksesoris / dukung upload PNG sendiri)
-  const [customization, setCustomization] = useState<MascotCustomization>(() => {
-    try {
-      const saved = localStorage.getItem('glukoquest_customization');
-      if (saved) return JSON.parse(saved);
-    } catch {
-      // ignore
-    }
-    return {
-      form: 'classic',
-      furColor: 'tosca',
-      headwear: 'none',
-      eyewear: 'none',
-      neckwear: 'none',
-      customImage: null,
-      customSadImage: null,
-    };
-  });
 
   // Quiz Configuration (1 Topik = 4 Sesi, 1 Sesi = 5 Soal, 1 Energi = 1 Sesi)
   const [quizConfig, setQuizConfig] = useState<{
@@ -85,7 +71,6 @@ export default function App() {
   });
 
   // Modals
-  const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
   const [isEcosystemModalOpen, setIsEcosystemModalOpen] = useState(false);
@@ -253,53 +238,35 @@ export default function App() {
 
               {/* 3. Hero Section (Tengah - Virtual Pet Maskot Awal dengan Fitur Beri Makan) */}
               <section className="flex flex-col items-center justify-center my-auto py-1 relative">
-                
-                {/* Bar Atas Virtual Pet: Status (Kiri) | Beri Makan (Tengah) | Dandani (Kanan) */}
-                <div className="w-full grid grid-cols-3 items-center mb-1.5 px-0.5">
-                  {/* Kiri: Status Vitalitas (Klik untuk toggle simulasi 95% Ceria vs 30% Sedih) */}
-                  <div className="flex justify-start">
-                    <button
-                      type="button"
-                      onClick={toggleHealthMode}
-                      className={`text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-2xs whitespace-nowrap cursor-pointer transition-colors ${
+
+                {/* Header Virtual Pet: Nama & Status (Kiri) | Tombol Beri Makan (Kanan) */}
+                <div className="w-full flex items-center justify-between mb-1 px-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-extrabold text-slate-800">Gogi Pet</span>
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${
                         healthPercent > 50
-                          ? 'text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100'
-                          : 'text-amber-800 bg-amber-50 border border-amber-300 hover:bg-amber-100'
+                          ? 'text-emerald-700 bg-emerald-50 border border-emerald-200'
+                          : 'text-amber-800 bg-amber-50 border border-amber-300'
                       }`}
-                      title="Klik untuk tes mode 95% Ceria vs 30% Lesu/Sedih"
                     >
-                      <i className={`fa-solid ${healthPercent > 50 ? 'fa-heart-pulse text-emerald-600' : 'fa-face-frown text-amber-600'} text-[10px]`}></i>
-                      <span>{healthPercent > 50 ? 'Kenyang' : 'Sedih (30%)'}</span>
-                    </button>
+                      <span>{healthPercent > 50 ? '🍎 Kenyang' : '💧 Butuh Apel'}</span>
+                    </span>
                   </div>
 
-                  {/* Tengah: Button Beri Makan (Berada pas di atas tengah virtual pet, tanpa "(1 energi)") */}
-                  <div className="flex justify-center">
-                    <button
-                      type="button"
-                      onClick={handleFeedMascot}
-                      className="text-[11px] font-extrabold text-emerald-800 bg-white hover:bg-emerald-50 active:scale-95 border-2 border-emerald-500 px-3 py-1 rounded-xl shadow-xs flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
-                      title="Beri makan maskot untuk menjaga vitalitas tetap prima!"
-                    >
-                      <span className="text-xs">🍎</span>
-                      <span>Beri Makan</span>
-                    </button>
-                  </div>
-
-                  {/* Kanan: Button Dandani */}
-                  <div className="flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => setIsCustomizerOpen(true)}
-                      className="text-[11px] font-bold text-slate-700 bg-white hover:bg-slate-50 active:scale-95 border border-slate-200 px-2.5 py-1 rounded-xl shadow-xs flex items-center gap-1 transition-all cursor-pointer whitespace-nowrap"
-                      title="Dandani maskot & pilih kostum!"
-                    >
-                      <span>✨ Dandani</span>
-                    </button>
-                  </div>
+                  {/* Button Beri Makan */}
+                  <button
+                    type="button"
+                    onClick={handleFeedMascot}
+                    className="text-[11px] font-extrabold text-emerald-800 bg-white hover:bg-emerald-50 active:scale-95 border-2 border-emerald-500 px-3 py-1 rounded-xl shadow-xs flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
+                    title="Beri makan maskot untuk menjaga vitalitas tetap prima!"
+                  >
+                    <span className="text-xs">🍎</span>
+                    <span>Beri Makan</span>
+                  </button>
                 </div>
 
-                {/* Karakter Virtual Pet (Monster Tosca: Binar Mata Berkilau, Mood Ceria atau Sedih saat 30%) */}
+                {/* Karakter Virtual Pet Resmi (Persis Referensi Gambar) */}
                 <div
                   onClick={handleFeedMascot}
                   className="cursor-pointer group relative flex flex-col items-center justify-center my-0.5"
@@ -307,71 +274,91 @@ export default function App() {
                 >
                   <MascotSVG
                     mood={currentMood}
-                    size={200}
+                    size={210}
                     isEating={isEatingAnim}
-                    customization={customization}
                   />
                 </div>
 
-                {/* Progress bar memanjang kecil: "Health: 95%" atau "Health: 30%" */}
-                <div
-                  onClick={toggleHealthMode}
-                  className="w-full max-w-[210px] flex flex-col items-center mt-0.5 cursor-pointer group"
-                  title="Klik untuk tes simulasi Health 30% (Lesu/Sedih) vs 95% (Ceria)"
-                >
+                {/* Progress bar vitalitas & 3-state mood tester (Ceria / Netral / Lesu) */}
+                <div className="w-full max-w-[220px] flex flex-col items-center mt-1">
                   <div className="w-full flex items-center justify-between text-[11px] font-bold text-slate-600 mb-1">
-                    <span className="group-hover:text-emerald-700 transition-colors">Health: {healthPercent}%</span>
-                    <span className={healthPercent > 50 ? 'text-emerald-600' : 'text-amber-700 font-extrabold'}>
-                      {healthPercent > 50 ? 'Vitalitas Prima ✨' : 'Lesu & Sedih 😔'}
+                    <span className="text-slate-700">Energi: {healthPercent}%</span>
+                    <span
+                      className={
+                        healthPercent > 70
+                          ? 'text-emerald-600 font-extrabold'
+                          : healthPercent >= 35
+                            ? 'text-teal-600 font-extrabold'
+                            : 'text-amber-700 font-extrabold'
+                      }
+                    >
+                      {healthPercent > 70
+                        ? 'Ceria ✨'
+                        : healthPercent >= 35
+                          ? 'Netral 🌿'
+                          : 'Lesu 💧'}
                     </span>
                   </div>
-                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden p-0.5">
+                  <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden p-0.5 shadow-inner">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
-                        healthPercent > 50 ? 'bg-[#2ECC71]' : 'bg-amber-500'
+                        healthPercent > 70
+                          ? 'bg-emerald-500'
+                          : healthPercent >= 35
+                            ? 'bg-teal-500'
+                            : 'bg-amber-500'
                       }`}
                       style={{ width: `${healthPercent}%` }}
                     />
                   </div>
-                  <span className="text-[9px] text-slate-400 mt-0.5">
-                    {healthPercent <= 50 ? '⚠️ Butuh jalan kaki atau makan apel' : 'Klik bar untuk tes mode 30% lesu'}
-                  </span>
-                </div>
 
-                {/* Opsi Bentuk Virtual Pet Lucu & Gemoy (Klik Langsung untuk Ganti Bentuk) */}
-                <div className="w-full mt-2 px-1 flex flex-col items-center">
-                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1">
-                    <span>Pilihan Karakter Lucu:</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-1.5 flex-wrap">
-                    {[
-                      { key: 'classic', label: 'Gogi', icon: '🦖' },
-                      { key: 'blob', label: 'Boba', icon: '🫧' },
-                      { key: 'fluffy', label: 'Pompom', icon: '☁️' },
-                      { key: 'sprout', label: 'Tunas', icon: '🌱' },
-                      { key: 'mochi', label: 'Mochi', icon: '🍡' },
-                      { key: 'chibi', label: 'Chibi', icon: '⭐' },
-                    ].map((item) => {
-                      const isActive = customization.form === item.key;
-                      return (
-                        <button
-                          key={item.key}
-                          type="button"
-                          onClick={() => {
-                            setCustomization((prev) => ({ ...prev, form: item.key as any }));
-                            showToast(`Bentuk karakter diubah ke ${item.label}! ✨`);
-                          }}
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
-                            isActive
-                              ? 'bg-emerald-600 text-white shadow-xs ring-1 ring-emerald-500'
-                              : 'bg-white hover:bg-slate-50 text-slate-600 border border-slate-200'
-                          }`}
-                        >
-                          <span>{item.icon}</span>
-                          <span>{item.label}</span>
-                        </button>
-                      );
-                    })}
+                  {/* Tombol Cepat Status Energi (Ceria / Netral / Lesu) */}
+                  <div className="w-full flex items-center justify-center gap-1.5 mt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setHealthPercent(95);
+                        setHasFedToday(true);
+                        showToast('Status Energi: Ceria (95% - Vitalitas Prima & Melambai) ✨');
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                        currentMood === 'happy'
+                          ? 'bg-emerald-600 text-white shadow-xs'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                      }`}
+                    >
+                      <span>✨ Ceria</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setHealthPercent(60);
+                        setHasFedToday(true);
+                        showToast('Status Energi: Netral (60% - Santai & Stabil) 🌿');
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                        currentMood === 'neutral'
+                          ? 'bg-teal-600 text-white shadow-xs'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                      }`}
+                    >
+                      <span>🌿 Netral</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setHealthPercent(15);
+                        setHasFedToday(false);
+                        showToast('Status Energi: Lesu (15% - Butuh Langkah & Apel) 💧');
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                        currentMood === 'tired'
+                          ? 'bg-amber-600 text-white shadow-xs'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                      }`}
+                    >
+                      <span>💧 Lesu</span>
+                    </button>
                   </div>
                 </div>
 
@@ -420,14 +407,12 @@ export default function App() {
           <button
             type="button"
             onClick={() => setActiveTab('beranda')}
-            className={`flex flex-col items-center justify-center transition-colors w-14 cursor-pointer ${
-              activeTab === 'beranda' ? 'text-emerald-600 font-bold' : 'text-slate-400 hover:text-slate-600'
-            }`}
+            className={`flex flex-col items-center justify-center transition-colors w-14 cursor-pointer ${activeTab === 'beranda' ? 'text-emerald-600 font-bold' : 'text-slate-400 hover:text-slate-600'
+              }`}
           >
             <div
-              className={`w-7 h-7 rounded-full flex items-center justify-center ${
-                activeTab === 'beranda' ? 'bg-emerald-50 text-emerald-600' : ''
-              }`}
+              className={`w-7 h-7 rounded-full flex items-center justify-center ${activeTab === 'beranda' ? 'bg-emerald-50 text-emerald-600' : ''
+                }`}
             >
               <i className="fa-solid fa-house text-sm"></i>
             </div>
@@ -437,14 +422,12 @@ export default function App() {
           <button
             type="button"
             onClick={() => setActiveTab('kuis')}
-            className={`flex flex-col items-center justify-center transition-colors w-14 cursor-pointer ${
-              activeTab === 'kuis' ? 'text-emerald-600 font-bold' : 'text-slate-400 hover:text-slate-600'
-            }`}
+            className={`flex flex-col items-center justify-center transition-colors w-14 cursor-pointer ${activeTab === 'kuis' ? 'text-emerald-600 font-bold' : 'text-slate-400 hover:text-slate-600'
+              }`}
           >
             <div
-              className={`w-7 h-7 rounded-full flex items-center justify-center ${
-                activeTab === 'kuis' ? 'bg-emerald-50 text-emerald-600' : ''
-              }`}
+              className={`w-7 h-7 rounded-full flex items-center justify-center ${activeTab === 'kuis' ? 'bg-emerald-50 text-emerald-600' : ''
+                }`}
             >
               <i className="fa-solid fa-trophy text-sm"></i>
             </div>
@@ -454,14 +437,12 @@ export default function App() {
           <button
             type="button"
             onClick={() => setActiveTab('feed')}
-            className={`flex flex-col items-center justify-center transition-colors w-14 cursor-pointer ${
-              activeTab === 'feed' ? 'text-emerald-600 font-bold' : 'text-slate-400 hover:text-slate-600'
-            }`}
+            className={`flex flex-col items-center justify-center transition-colors w-14 cursor-pointer ${activeTab === 'feed' ? 'text-emerald-600 font-bold' : 'text-slate-400 hover:text-slate-600'
+              }`}
           >
             <div
-              className={`w-7 h-7 rounded-full flex items-center justify-center ${
-                activeTab === 'feed' ? 'bg-emerald-50 text-emerald-600' : ''
-              }`}
+              className={`w-7 h-7 rounded-full flex items-center justify-center ${activeTab === 'feed' ? 'bg-emerald-50 text-emerald-600' : ''
+                }`}
             >
               <i className="fa-solid fa-bell text-sm"></i>
             </div>
@@ -471,14 +452,12 @@ export default function App() {
           <button
             type="button"
             onClick={() => setActiveTab('voucher')}
-            className={`flex flex-col items-center justify-center transition-colors w-14 cursor-pointer ${
-              activeTab === 'voucher' ? 'text-emerald-600 font-bold' : 'text-slate-400 hover:text-slate-600'
-            }`}
+            className={`flex flex-col items-center justify-center transition-colors w-14 cursor-pointer ${activeTab === 'voucher' ? 'text-emerald-600 font-bold' : 'text-slate-400 hover:text-slate-600'
+              }`}
           >
             <div
-              className={`w-7 h-7 rounded-full flex items-center justify-center ${
-                activeTab === 'voucher' ? 'bg-emerald-50 text-emerald-600' : ''
-              }`}
+              className={`w-7 h-7 rounded-full flex items-center justify-center ${activeTab === 'voucher' ? 'bg-emerald-50 text-emerald-600' : ''
+                }`}
             >
               <i className="fa-solid fa-ticket text-sm"></i>
             </div>
@@ -488,14 +467,12 @@ export default function App() {
           <button
             type="button"
             onClick={() => setActiveTab('profil')}
-            className={`flex flex-col items-center justify-center transition-colors w-14 cursor-pointer ${
-              activeTab === 'profil' ? 'text-emerald-600 font-bold' : 'text-slate-400 hover:text-slate-600'
-            }`}
+            className={`flex flex-col items-center justify-center transition-colors w-14 cursor-pointer ${activeTab === 'profil' ? 'text-emerald-600 font-bold' : 'text-slate-400 hover:text-slate-600'
+              }`}
           >
             <div
-              className={`w-7 h-7 rounded-full flex items-center justify-center ${
-                activeTab === 'profil' ? 'bg-emerald-50 text-emerald-600' : ''
-              }`}
+              className={`w-7 h-7 rounded-full flex items-center justify-center ${activeTab === 'profil' ? 'bg-emerald-50 text-emerald-600' : ''
+                }`}
             >
               <i className="fa-solid fa-user text-sm"></i>
             </div>
@@ -575,21 +552,6 @@ export default function App() {
         </div>
       )}
 
-      {/* Mascot Customizer Modal (Mendukung Ganti Bentuk, Warna, Aksesoris & Upload PNG Asli) */}
-      <MascotCustomizerModal
-        isOpen={isCustomizerOpen}
-        onClose={() => setIsCustomizerOpen(false)}
-        customization={customization}
-        onSave={(newC) => {
-          setCustomization(newC);
-          try {
-            localStorage.setItem('glukoquest_customization', JSON.stringify(newC));
-          } catch {
-            // ignore
-          }
-          showToast('Tampilan maskot berhasil diperbarui! ✨');
-        }}
-      />
 
       {/* Quiz Modal (4 Sesi per Topik, 5 Soal per Sesi, 1 Energi = 1 Sesi) */}
       <QuizModal
