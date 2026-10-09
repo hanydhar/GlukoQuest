@@ -1,18 +1,30 @@
 import React, { useState } from 'react';
 
-interface UserProfileData {
+export interface UserProfileData {
   name: string;
   school: string;
   grade: string;
   nisn: string;
-  avatar: string;
+  avatarIcon: string;
+  avatarColor: string;
 }
+
+export const AVATAR_OPTIONS = [
+  { id: 'student', icon: 'fa-solid fa-user', label: 'Siswa', color: 'bg-emerald-600' },
+  { id: 'grad', icon: 'fa-solid fa-user-graduate', label: 'Pelajar', color: 'bg-indigo-600' },
+  { id: 'runner', icon: 'fa-solid fa-person-running', label: 'Pelari', color: 'bg-teal-600' },
+  { id: 'biker', icon: 'fa-solid fa-person-biking', label: 'Gowes', color: 'bg-sky-600' },
+  { id: 'ninja', icon: 'fa-solid fa-user-ninja', label: 'Ninja', color: 'bg-purple-600' },
+  { id: 'astronaut', icon: 'fa-solid fa-user-astronaut', label: 'Penjelajah', color: 'bg-amber-600' },
+];
 
 interface ProfileTabProps {
   currentSteps: number;
   targetSteps: number;
   userPoints: number;
   energy: number;
+  userProfile: UserProfileData;
+  onUpdateProfile: (updated: UserProfileData) => void;
   onUpdateTarget: (newTarget: number) => void;
 }
 
@@ -21,17 +33,10 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   targetSteps,
   userPoints,
   energy,
+  userProfile,
+  onUpdateProfile,
   onUpdateTarget,
 }) => {
-  // Profile state
-  const [profile, setProfile] = useState<UserProfileData>({
-    name: 'Budi Santoso',
-    school: 'SMPN 1',
-    grade: '8-B',
-    nisn: '0092837190',
-    avatar: '👦',
-  });
-
   // Settings state
   const [settings, setSettings] = useState({
     notifReminders: true,
@@ -43,32 +48,32 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   // Active modal state
   const [activeModal, setActiveModal] = useState<'edit' | 'settings' | 'guide' | 'about' | 'faq' | null>(null);
 
-  // Edit form state
-  const [editForm, setEditForm] = useState<UserProfileData>(profile);
+  // Edit form state initialized from userProfile prop
+  const [editForm, setEditForm] = useState<UserProfileData>(userProfile);
+
+  const handleOpenEditModal = () => {
+    setEditForm(userProfile);
+    setActiveModal('edit');
+  };
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
-    setProfile(editForm);
+    onUpdateProfile(editForm);
     setActiveModal(null);
   };
 
   return (
     <div className="space-y-3.5 pb-20 animate-in fade-in duration-150">
       {/* Header Profile Card */}
-      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs flex items-center gap-3.5">
+      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs flex items-center gap-3.5">
         <div className="relative">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 p-0.5 shadow-xs flex items-center justify-center">
-            <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center text-2xl">
-              {profile.avatar}
-            </div>
+          <div className={`w-14 h-14 rounded-2xl ${userProfile.avatarColor || 'bg-emerald-600'} text-white shadow-2xs flex items-center justify-center text-2xl`}>
+            <i className={userProfile.avatarIcon || 'fa-solid fa-user'}></i>
           </div>
           <button
-            onClick={() => {
-              setEditForm(profile);
-              setActiveModal('edit');
-            }}
-            className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-[9px] hover:bg-emerald-600 transition-colors"
-            title="Edit Foto"
+            onClick={handleOpenEditModal}
+            className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-[9px] hover:bg-emerald-600 transition-colors cursor-pointer"
+            title="Edit Profil"
           >
             <i className="fa-solid fa-pen"></i>
           </button>
@@ -77,17 +82,17 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
             <h3 className="font-extrabold text-sm text-slate-800 truncate">
-              {profile.name}
+              {userProfile.name}
             </h3>
             <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
               Juara 1 SMP
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
-            {profile.school} • Kelas {profile.grade}
+            {userProfile.school} • Kelas {userProfile.grade}
           </p>
           <p className="text-[10px] text-slate-400 font-mono mt-0.5">
-            NISN: {profile.nisn}
+            NISN: {userProfile.nisn}
           </p>
         </div>
       </div>
@@ -119,7 +124,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         {/* 1. Edit Profil */}
         <button
           onClick={() => {
-            setEditForm(profile);
+            setEditForm(userProfile);
             setActiveModal('edit');
           }}
           className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-slate-50 transition-colors group cursor-pointer"
@@ -249,20 +254,27 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
             <form onSubmit={handleSaveProfile} className="space-y-3 text-xs">
               <div>
-                <label className="block text-[11px] font-bold text-slate-600 mb-1">Pilih Avatar</label>
-                <div className="flex gap-2 justify-between">
-                  {['👦', '👧', '🏃‍♂️', '🚴‍♀️', '🧑‍🎓'].map((av) => (
+                <label className="block text-[11px] font-bold text-slate-600 mb-1.5">Pilih Ikon & Avatar</label>
+                <div className="grid grid-cols-6 gap-1.5">
+                  {AVATAR_OPTIONS.map((av) => (
                     <button
-                      key={av}
+                      key={av.id}
                       type="button"
-                      onClick={() => setEditForm({ ...editForm, avatar: av })}
-                      className={`w-10 h-10 rounded-xl text-xl border flex items-center justify-center transition-all ${
-                        editForm.avatar === av
-                          ? 'border-emerald-600 bg-emerald-50 ring-2 ring-emerald-500/20'
-                          : 'border-slate-200 hover:bg-slate-50'
+                      onClick={() =>
+                        setEditForm({
+                          ...editForm,
+                          avatarIcon: av.icon,
+                          avatarColor: av.color,
+                        })
+                      }
+                      className={`h-11 rounded-xl flex flex-col items-center justify-center gap-0.5 text-white transition-all cursor-pointer ${av.color} ${
+                        editForm.avatarIcon === av.icon
+                          ? 'ring-3 ring-slate-900 scale-105 shadow-xs'
+                          : 'opacity-70 hover:opacity-100'
                       }`}
+                      title={av.label}
                     >
-                      {av}
+                      <i className={`${av.icon} text-sm`}></i>
                     </button>
                   ))}
                 </div>
@@ -483,8 +495,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       {activeModal === 'about' && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 animate-in fade-in">
           <div className="w-full max-w-sm bg-white rounded-3xl p-5 border border-slate-200 shadow-2xl text-center space-y-3.5">
-            <div className="w-16 h-16 mx-auto rounded-3xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white flex items-center justify-center text-3xl shadow-sm">
-              👟
+            <div className="w-16 h-16 mx-auto rounded-3xl bg-emerald-600 text-white flex items-center justify-center text-2xl shadow-xs">
+              <i className="fa-solid fa-person-walking"></i>
             </div>
             <div>
               <h3 className="text-base font-black text-slate-800">GlukoQuest</h3>

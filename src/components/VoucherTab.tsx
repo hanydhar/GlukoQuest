@@ -60,7 +60,7 @@ export const VoucherTab: React.FC<VoucherTabProps> = ({
       </div>
 
       {/* Point Balance Card */}
-      <div className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-3xl p-4 text-white shadow-md shadow-emerald-700/20 flex items-center justify-between">
+      <div className="bg-emerald-600 rounded-3xl p-4 text-white shadow-xs flex items-center justify-between">
         <div>
           <span className="text-[11px] font-bold text-emerald-100 tracking-wider uppercase">
             Saldo Poin Hadiahmu
@@ -73,8 +73,8 @@ export const VoucherTab: React.FC<VoucherTabProps> = ({
             Nilai Konversi: 200 Poin Hadiah = 1 E-Voucher Rp5.000
           </p>
         </div>
-        <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center text-2xl">
-          🎟️
+        <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center text-xl text-white">
+          <i className="fa-solid fa-ticket"></i>
         </div>
       </div>
 
