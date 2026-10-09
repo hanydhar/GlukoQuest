@@ -595,7 +595,7 @@ export default function App() {
                   {/* Card 1: Kuis Gizi */}
                   <div
                     onClick={() => setActiveTab('kuis')}
-                    className="bg-white hover:bg-slate-50 p-3 rounded-2xl border border-slate-200 hover:border-emerald-300 transition-all cursor-pointer shadow-2xs group flex flex-col justify-between space-y-2"
+                    className="bg-white hover:bg-emerald-50/50 p-3 rounded-2xl border border-slate-200 hover:border-emerald-400 transition-all cursor-pointer shadow-2xs group flex flex-col justify-between space-y-2"
                   >
                     <div className="flex items-center justify-between">
                       <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center text-xs font-bold group-hover:scale-105 transition-transform">
@@ -609,7 +609,7 @@ export default function App() {
                       <h4 className="text-xs font-bold text-slate-800 group-hover:text-emerald-800 transition-colors">
                         Kuis & Ranking
                       </h4>
-                      <p className="text-[10px] text-slate-400 font-medium line-clamp-1 mt-0.5">
+                      <p className="text-[10px] text-slate-400 font-medium line-clamp-1 mt-0.5 group-hover:text-emerald-600">
                         4 Topik Pradiabetes
                       </p>
                     </div>
@@ -618,21 +618,21 @@ export default function App() {
                   {/* Card 2: Voucher Kantin */}
                   <div
                     onClick={() => setActiveTab('voucher')}
-                    className="bg-white hover:bg-slate-50 p-3 rounded-2xl border border-slate-200 hover:border-amber-300 transition-all cursor-pointer shadow-2xs group flex flex-col justify-between space-y-2"
+                    className="bg-white hover:bg-emerald-50/50 p-3 rounded-2xl border border-slate-200 hover:border-emerald-400 transition-all cursor-pointer shadow-2xs group flex flex-col justify-between space-y-2"
                   >
                     <div className="flex items-center justify-between">
-                      <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center text-xs font-bold group-hover:scale-105 transition-transform">
+                      <div className="w-8 h-8 rounded-xl bg-slate-50 text-slate-700 group-hover:bg-emerald-50 group-hover:text-emerald-700 border border-slate-200 group-hover:border-emerald-200 flex items-center justify-center text-xs font-bold group-hover:scale-105 transition-all">
                         <i className="fa-solid fa-ticket"></i>
                       </div>
-                      <span className="text-[10px] font-bold text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                      <span className="text-[10px] font-bold text-slate-700 group-hover:text-emerald-700 bg-slate-50 group-hover:bg-emerald-50 px-1.5 py-0.5 rounded border border-slate-200 group-hover:border-emerald-200 transition-colors">
                         Rp5.000
                       </span>
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-slate-800 group-hover:text-amber-900 transition-colors">
+                      <h4 className="text-xs font-bold text-slate-800 group-hover:text-emerald-800 transition-colors">
                         Tukar E-Voucher
                       </h4>
-                      <p className="text-[10px] text-slate-400 font-medium line-clamp-1 mt-0.5">
+                      <p className="text-[10px] text-slate-400 font-medium line-clamp-1 mt-0.5 group-hover:text-emerald-600">
                         Kantin Sehat Whitelist
                       </p>
                     </div>
@@ -641,21 +641,21 @@ export default function App() {
                   {/* Card 3: Kamus Gula Jajanan */}
                   <div
                     onClick={() => setIsSugarGuideModalOpen(true)}
-                    className="bg-white hover:bg-slate-50 p-3 rounded-2xl border border-slate-200 hover:border-rose-300 transition-all cursor-pointer shadow-2xs group flex flex-col justify-between space-y-2"
+                    className="bg-white hover:bg-emerald-50/50 p-3 rounded-2xl border border-slate-200 hover:border-emerald-400 transition-all cursor-pointer shadow-2xs group flex flex-col justify-between space-y-2"
                   >
                     <div className="flex items-center justify-between">
-                      <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 flex items-center justify-center text-xs font-bold group-hover:scale-105 transition-transform">
+                      <div className="w-8 h-8 rounded-xl bg-slate-50 text-slate-700 group-hover:bg-emerald-50 group-hover:text-emerald-700 border border-slate-200 group-hover:border-emerald-200 flex items-center justify-center text-xs font-bold group-hover:scale-105 transition-all">
                         <i className="fa-solid fa-table-list"></i>
                       </div>
-                      <span className="text-[10px] font-bold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">
+                      <span className="text-[10px] font-bold text-slate-700 group-hover:text-emerald-700 bg-slate-50 group-hover:bg-emerald-50 px-1.5 py-0.5 rounded border border-slate-200 group-hover:border-emerald-200 transition-colors">
                         Info Gula
                       </span>
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-slate-800 group-hover:text-rose-800 transition-colors">
+                      <h4 className="text-xs font-bold text-slate-800 group-hover:text-emerald-800 transition-colors">
                         Kamus Gula Snack
                       </h4>
-                      <p className="text-[10px] text-slate-400 font-medium line-clamp-1 mt-0.5">
+                      <p className="text-[10px] text-slate-400 font-medium line-clamp-1 mt-0.5 group-hover:text-emerald-600">
                         Kadar Gula Boba & Jajanan
                       </p>
                     </div>
@@ -664,21 +664,21 @@ export default function App() {
                   {/* Card 4: Papan Peringkat Kelas */}
                   <div
                     onClick={() => setActiveTab('kuis')}
-                    className="bg-white hover:bg-slate-50 p-3 rounded-2xl border border-slate-200 hover:border-sky-300 transition-all cursor-pointer shadow-2xs group flex flex-col justify-between space-y-2"
+                    className="bg-white hover:bg-emerald-50/50 p-3 rounded-2xl border border-slate-200 hover:border-emerald-400 transition-all cursor-pointer shadow-2xs group flex flex-col justify-between space-y-2"
                   >
                     <div className="flex items-center justify-between">
-                      <div className="w-8 h-8 rounded-xl bg-sky-50 text-sky-700 border border-sky-200 flex items-center justify-center text-xs font-bold group-hover:scale-105 transition-transform">
+                      <div className="w-8 h-8 rounded-xl bg-slate-50 text-slate-700 group-hover:bg-emerald-50 group-hover:text-emerald-700 border border-slate-200 group-hover:border-emerald-200 flex items-center justify-center text-xs font-bold group-hover:scale-105 transition-all">
                         <i className="fa-solid fa-ranking-star"></i>
                       </div>
-                      <span className="text-[10px] font-bold text-sky-700 bg-sky-50 px-1.5 py-0.5 rounded border border-sky-200">
+                      <span className="text-[10px] font-bold text-slate-700 group-hover:text-emerald-700 bg-slate-50 group-hover:bg-emerald-50 px-1.5 py-0.5 rounded border border-slate-200 group-hover:border-emerald-200 transition-colors">
                         Rank #2
                       </span>
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-slate-800 group-hover:text-sky-800 transition-colors">
+                      <h4 className="text-xs font-bold text-slate-800 group-hover:text-emerald-800 transition-colors">
                         Papan Kelas 8B
                       </h4>
-                      <p className="text-[10px] text-slate-400 font-medium line-clamp-1 mt-0.5">
+                      <p className="text-[10px] text-slate-400 font-medium line-clamp-1 mt-0.5 group-hover:text-emerald-600">
                         Kompetisi Sehat Teman
                       </p>
                     </div>

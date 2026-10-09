@@ -36,34 +36,25 @@ export const LeaderboardTab: React.FC<LeaderboardTabProps> = ({
           </h3>
         </div>
 
-        {/* 2x2 Grid of Topics */}
+        {/* 2x2 Grid of Topics (Konsisten Putih, Hover Hijau) */}
         <div className="grid grid-cols-2 gap-2.5">
-          {QUIZ_TOPICS.map((topic, index) => {
-            const isHighlight = index === 0;
+          {QUIZ_TOPICS.map((topic) => {
             return (
               <button
                 key={topic.id}
                 onClick={() => setSelectedTopic(topic)}
-                className={`p-3 rounded-2xl flex flex-col items-center text-center justify-center gap-2 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] cursor-pointer ${
-                  isHighlight
-                    ? 'bg-emerald-600 text-white shadow-sm'
-                    : 'bg-white text-slate-800 border border-slate-200 hover:border-emerald-300 hover:bg-slate-50'
-                }`}
+                className="group p-3 rounded-2xl flex flex-col items-center text-center justify-center gap-2 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] cursor-pointer bg-white text-slate-800 border border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/50 shadow-2xs"
                 style={{ minHeight: '110px' }}
               >
-                <div
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg ${
-                    isHighlight ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'
-                  }`}
-                >
+                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 text-slate-700 group-hover:bg-emerald-100 group-hover:text-emerald-700 group-hover:border-emerald-200 transition-colors flex items-center justify-center text-lg">
                   <i className={`fa-solid ${topic.icon}`}></i>
                 </div>
 
                 <div className="space-y-0.5">
-                  <div className={`text-xs font-bold leading-tight ${isHighlight ? 'text-white' : 'text-slate-800'}`}>
+                  <div className="text-xs font-bold leading-tight text-slate-800 group-hover:text-emerald-800 transition-colors">
                     {topic.title}
                   </div>
-                  <div className={`text-[10px] ${isHighlight ? 'text-emerald-100' : 'text-slate-400'}`}>
+                  <div className="text-[10px] text-slate-400 group-hover:text-emerald-600 transition-colors">
                     {topic.subtitle}
                   </div>
                 </div>
