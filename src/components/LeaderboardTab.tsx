@@ -160,8 +160,8 @@ export const LeaderboardTab: React.FC<LeaderboardTabProps> = ({
               Akumulasi poin hadiah dari kuis & langkah harian
             </p>
           </div>
-          <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-            🏆 Musim 1
+          <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+            🏆 Minggu 1
           </span>
         </div>
 
@@ -213,9 +213,6 @@ export const LeaderboardTab: React.FC<LeaderboardTabProps> = ({
                 <div className="text-right">
                   <div className="text-xs font-black text-slate-900">
                     {displayPoints.toLocaleString('id-ID')} Pts
-                  </div>
-                  <div className="text-[10px] text-emerald-700 font-semibold">
-                    {displayPoints >= 200 ? '✅ Siap E-Voucher' : `Kurang ${200 - displayPoints} Pts`}
                   </div>
                 </div>
               </div>
